@@ -4,7 +4,7 @@
 
 ## Usage
 
-**Power cable:**
+**Watch power cable connection:**
 
 ``` console
 $ connected watch -- say "Power cable disconnected."
@@ -13,13 +13,19 @@ $ connected watch -- say "Power cable disconnected."
 or use `--command (-c)`
 
 ``` console
-$ connected watch -c "sh ./slack_notify.sh"
+$ connected watch -c "osascript -e "set Volume 10"; say -v Alex "Power cable disconnected."
 ```
 
-**Wi-Fi:**
+**Watch Wi-Fi connection:**
 
 ``` console
 $ connected watch --wifi -- say "Wi-Fi disconnected."
+```
+
+or use `--command (-c)`
+
+``` console
+$ connected watch -c "sh ./slack_notify.sh"
 ```
 
 ## Install
