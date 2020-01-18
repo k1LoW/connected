@@ -34,26 +34,41 @@ import (
 	"github.com/spf13/cobra"
 )
 
-const connCheckCmd = "ioreg -rn AppleSmartBattery | grep ExternalConnected"
+const powerConnCheckCmd = "ioreg -rn AppleSmartBattery | grep ExternalConnected"
+const powerConnContains = "Yes"
+const powerConn = "Power cable"
+const wifiConnCheckCmd = "networksetup -getairportnetwork en0"
+const wifiConnContains = "Current Wi-Fi Network:"
+const wifiConn = "Wi-Fi"
 
 var (
-	defaultCmd = `osascript -e "set Volume 5"; say -v Alex "Power cable disconnected."`
+	defaultCmd = `osascript -e "set Volume 5"; say -v Alex "Disconnected."`
 	interval   int
 	command    string
+	wifi       bool
 )
 
 // watchCmd represents the watch command
 var watchCmd = &cobra.Command{
 	Use:   "watch",
-	Short: "watch the power cable connection",
-	Long:  `watch the power cable connection.`,
+	Short: "watch connection",
+	Long:  `watch connection.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		ctx, cancel := context.WithCancel(context.Background())
 		defer cancel()
 
-		o, _ := exec.CommandContext(ctx, "sh", "-c", connCheckCmd).Output()
-		if strings.Contains(string(o), "No") {
-			_, _ = fmt.Fprintln(os.Stderr, "Power cable is disconnected. Connect the cable and execute command again.")
+		checkCmd := powerConnCheckCmd
+		contains := powerConnContains
+		target := powerConn
+		if wifi {
+			checkCmd = wifiConnCheckCmd
+			contains = wifiConnContains
+			target = wifiConn
+		}
+
+		o, _ := exec.CommandContext(ctx, "sh", "-c", checkCmd).Output()
+		if !strings.Contains(string(o), contains) {
+			_, _ = fmt.Fprintln(os.Stderr, fmt.Sprintf("%s is disconnected. Connect and execute command again.", target))
 			os.Exit(1)
 		}
 
@@ -65,12 +80,11 @@ var watchCmd = &cobra.Command{
 		} else {
 			c = []string{"sh", "-c", command}
 		}
-
 		sigChan := make(chan os.Signal, 1)
 		signal.Ignore()
 		signal.Notify(sigChan, syscall.SIGINT, syscall.SIGQUIT, syscall.SIGTERM)
 
-		_, _ = fmt.Fprintln(os.Stderr, "Start watching the power cable connection.")
+		_, _ = fmt.Fprintln(os.Stderr, fmt.Sprintf("Start watching connection (%s).", target))
 
 		lock := false
 	L:
@@ -82,11 +96,11 @@ var watchCmd = &cobra.Command{
 				if lock {
 					continue
 				}
-				o, _ := exec.CommandContext(ctx, "sh", "-c", connCheckCmd).Output()
-				if strings.Contains(string(o), "No") {
+				o, _ := exec.CommandContext(ctx, "sh", "-c", checkCmd).Output()
+				if !strings.Contains(string(o), contains) {
 					go func() {
 						lock = true
-						_, _ = fmt.Fprintln(os.Stderr, "Power cable disconnected.")
+						_, _ = fmt.Fprintln(os.Stderr, fmt.Sprintf("%s disconnected.", target))
 						_ = exec.CommandContext(ctx, c[0], c[1:]...).Run()
 						time.Sleep(500 * time.Millisecond)
 						lock = false
@@ -99,9 +113,10 @@ var watchCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(watchCmd)
-	watchCmd.Flags().IntVarP(&interval, "interval", "i", 3, "interval")
+	watchCmd.Flags().IntVarP(&interval, "interval", "i", 3, "watch interval (second)")
 	if os.Getenv("DEBUG") != "" {
-		defaultCmd = `osascript -e "set Volume 2"; say -v Alex "Power cable disconnected."`
+		defaultCmd = `osascript -e "set Volume 2"; say -v Alex "Disconnected."`
 	}
-	watchCmd.Flags().StringVarP(&command, "command", "c", defaultCmd, "command to execute when the power cable disconnected")
+	watchCmd.Flags().StringVarP(&command, "command", "c", defaultCmd, "command to execute when disconnected")
+	watchCmd.Flags().BoolVarP(&wifi, "wifi", "", false, "watch Wi-Fi connection")
 }
