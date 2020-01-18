@@ -29,7 +29,7 @@ import (
 )
 
 var rootCmd = &cobra.Command{
-	Use:   "connectedp",
+	Use:   "connected",
 	Short: "Check your MacBook power cable connection",
 	Long:  `Check your MacBook power cable connection.`,
 }

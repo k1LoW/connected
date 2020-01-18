@@ -1,4 +1,4 @@
-module github.com/k1LoW/connectedp
+module github.com/k1LoW/connected
 
 go 1.13
 
