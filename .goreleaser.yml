@@ -39,4 +39,9 @@ brews:
     email: k1lowxb@gmail.com
   homepage: https://github.com/k1LoW/connectedp
   description: 'Check your MacBook power cable connection.'
-  install: bin.install 'connectedp'
+  install: |
+    system './connectedp', 'completion', 'bash', '--out', 'connectedp.bash'
+    system './connectedp', 'completion', 'zsh', '--out', 'connectedp.zsh'
+    bin.install 'connectedp'
+    bash_completion.install 'connectedp.bash' => 'connectedp'
+    zsh_completion.install 'connectedp.zsh' => '_connectedp'
