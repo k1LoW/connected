@@ -24,7 +24,7 @@ package cmd
 import (
 	"fmt"
 
-	"github.com/k1LoW/connectedp/version"
+	"github.com/k1LoW/connected/version"
 	"github.com/spf13/cobra"
 )
 

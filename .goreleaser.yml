@@ -4,16 +4,16 @@ before:
     - go mod tidy
 builds:
 -
-  id: connectedp-darwin
+  id: connected-darwin
   env:
     - CGO_ENABLED=0
   goos:
     - darwin
   ldflags:
-    - -s -w -X github.com/k1LoW/connectedp.version={{.Version}} -X github.com/k1LoW/connectedp.commit={{.FullCommit}} -X github.com/k1LoW/connectedp.date={{.Date}} -X github.com/k1LoW/connectedp/version.Version={{.Version}}
+    - -s -w -X github.com/k1LoW/connected.version={{.Version}} -X github.com/k1LoW/connected.commit={{.FullCommit}} -X github.com/k1LoW/connected.date={{.Date}} -X github.com/k1LoW/connected/version.Version={{.Version}}
 archives:
 -
-  id: connectedp-archive
+  id: connected-archive
   name_template: '{{ .ProjectName }}_v{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}'
   format_overrides:
     - goos: darwin
@@ -30,18 +30,18 @@ changelog:
   skip: true
 brews:
 -
-  name: connectedp
+  name: connected
   github:
     owner: k1LoW
     name: homebrew-tap
   commit_author:
     name: k1LoW
     email: k1lowxb@gmail.com
-  homepage: https://github.com/k1LoW/connectedp
+  homepage: https://github.com/k1LoW/connected
   description: 'Check your MacBook power cable connection.'
   install: |
-    system './connectedp', 'completion', 'bash', '--out', 'connectedp.bash'
-    system './connectedp', 'completion', 'zsh', '--out', 'connectedp.zsh'
-    bin.install 'connectedp'
-    bash_completion.install 'connectedp.bash' => 'connectedp'
-    zsh_completion.install 'connectedp.zsh' => '_connectedp'
+    system './connected', 'completion', 'bash', '--out', 'connected.bash'
+    system './connected', 'completion', 'zsh', '--out', 'connected.zsh'
+    bin.install 'connected'
+    bash_completion.install 'connected.bash' => 'connected'
+    zsh_completion.install 'connected.zsh' => '_connected'

@@ -1,4 +1,4 @@
-PKG = github.com/k1LoW/connectedp
+PKG = github.com/k1LoW/connected
 COMMIT = $$(git describe --tags --always)
 OSNAME=${shell uname -s}
 ifeq ($(OSNAME),Darwin)

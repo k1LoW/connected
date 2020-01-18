@@ -1,17 +1,17 @@
-# connectedp
+# connected
 
 :electric_plug: Watch your MacBook power cable connection :zap:
 
 ## Usage
 
 ``` console
-$ connectedp watch -- say "Power cable disconnected."
+$ connected watch -- say "Power cable disconnected."
 ```
 
 or use `-c`
 
 ``` console
-$ connectedp watch -c "sh ./slack_notify.sh"
+$ connected watch -c "sh ./slack_notify.sh"
 ```
 
 ## Install
@@ -19,15 +19,15 @@ $ connectedp watch -c "sh ./slack_notify.sh"
 **homebrew tap:**
 
 ```console
-$ brew install k1LoW/tap/connectedp
+$ brew install k1LoW/tap/connected
 ```
 
 **manually:**
 
-Download binany from [releases page](https://github.com/k1LoW/connectedp/releases)
+Download binany from [releases page](https://github.com/k1LoW/connected/releases)
 
 **go get:**
 
 ```console
-$ go get github.com/k1LoW/connectedp
+$ go get github.com/k1LoW/connected
 ```

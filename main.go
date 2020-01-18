@@ -21,7 +21,7 @@ THE SOFTWARE.
 */
 package main
 
-import "github.com/k1LoW/connectedp/cmd"
+import "github.com/k1LoW/connected/cmd"
 
 func main() {
   cmd.Execute()
