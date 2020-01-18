@@ -1,3 +1,3 @@
 # connectedp
 
-:electric_plug: Check your MacBook power cable connection :zap:
+:electric_plug: Watch your MacBook power cable connection :zap:
