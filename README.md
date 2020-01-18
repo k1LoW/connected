@@ -10,7 +10,7 @@
 $ connected watch -- say "Power cable disconnected."
 ```
 
-or use `-c`
+or use `--command (-c)`
 
 ``` console
 $ connected watch -c "sh ./slack_notify.sh"
