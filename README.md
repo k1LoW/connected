@@ -1,4 +1,4 @@
-# connected
+# connected [![GitHub release](https://img.shields.io/github/release/k1LoW/connected.svg)](https://github.com/k1LoW/connected/releases)
 
 :electric_plug: Watch your MacBook connection :zap:
 
