@@ -8,8 +8,10 @@
 $ connectedp watch -- say "Power cable disconnected."
 ```
 
+or use `-c`
+
 ``` console
-$ connectedp watch -- ./slack_notify.sh
+$ connectedp watch -c "sh ./slack_notify.sh"
 ```
 
 ## Install
@@ -29,6 +31,3 @@ Download binany from [releases page](https://github.com/k1LoW/connectedp/release
 ```console
 $ go get github.com/k1LoW/connectedp
 ```
-
-
-
