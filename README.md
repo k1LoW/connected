@@ -1,8 +1,10 @@
 # connected
 
-:electric_plug: Watch your MacBook power cable connection :zap:
+:electric_plug: Watch your MacBook connection :zap:
 
 ## Usage
+
+**Power cable:**
 
 ``` console
 $ connected watch -- say "Power cable disconnected."
@@ -12,6 +14,12 @@ or use `-c`
 
 ``` console
 $ connected watch -c "sh ./slack_notify.sh"
+```
+
+**Wi-Fi:**
+
+``` console
+$ connected watch --wifi -- say "Wi-Fi disconnected."
 ```
 
 ## Install
