@@ -27,18 +27,13 @@ import (
 	"os"
 	"os/exec"
 	"os/signal"
-	"strings"
 	"syscall"
 	"time"
 
+	"github.com/k1LoW/connected/conn"
 	"github.com/spf13/cobra"
 )
 
-const powerConnCheckCmd = "ioreg -rn AppleSmartBattery | grep ExternalConnected"
-const powerConnContains = "Yes"
-const powerConn = "Power cable"
-const wifiConnCheckCmd = "networksetup -getairportnetwork en0"
-const wifiConnContains = "Current Wi-Fi Network:"
 const wifiConn = "Wi-Fi"
 
 var (
@@ -57,25 +52,23 @@ var watchCmd = &cobra.Command{
 		ctx, cancel := context.WithCancel(context.Background())
 		defer cancel()
 
-		checkCmd := powerConnCheckCmd
-		contains := powerConnContains
-		target := powerConn
-		if wifi {
-			checkCmd = wifiConnCheckCmd
-			contains = wifiConnContains
-			target = wifiConn
+		var (
+			cn  conn.Conn
+			err error
+		)
+		switch {
+		case wifi:
+			cn, err = conn.NewWifi(ctx)
+		default:
+			cn, err = conn.NewPower(ctx)
 		}
 
-		o, _ := exec.CommandContext(ctx, "sh", "-c", checkCmd).Output()
-		if !strings.Contains(string(o), contains) {
-			_, _ = fmt.Fprintln(os.Stderr, fmt.Sprintf("%s is disconnected. Connect and execute command again.", target))
+		if err != nil {
+			_, _ = fmt.Fprintln(os.Stderr, fmt.Sprintf("%s. Connect and execute command again.", err))
 			os.Exit(1)
 		}
-		if wifi {
-			// Show current Wi-Fi network name
-			fmt.Print(string(o))
-		}
-		contains = string(o)
+
+		fmt.Println(cn.State())
 
 		ticker := time.NewTicker(time.Duration(interval) * time.Second)
 		var c []string
@@ -89,7 +82,7 @@ var watchCmd = &cobra.Command{
 		signal.Ignore()
 		signal.Notify(sigChan, syscall.SIGINT, syscall.SIGQUIT, syscall.SIGTERM)
 
-		_, _ = fmt.Fprintln(os.Stderr, fmt.Sprintf("Start watching connection (%s).", target))
+		_, _ = fmt.Fprintln(os.Stderr, fmt.Sprintf("Start watching connection (%s).", cn.Name()))
 
 		lock := false
 	L:
@@ -101,11 +94,10 @@ var watchCmd = &cobra.Command{
 				if lock {
 					continue
 				}
-				o, _ := exec.CommandContext(ctx, "sh", "-c", checkCmd).Output()
-				if !strings.Contains(string(o), contains) {
+				if err := cn.Check(ctx); err != nil {
 					go func() {
 						lock = true
-						_, _ = fmt.Fprintln(os.Stderr, fmt.Sprintf("%s disconnected.", target))
+						_, _ = fmt.Fprintln(os.Stderr, err)
 						_ = exec.CommandContext(ctx, c[0], c[1:]...).Run()
 						time.Sleep(500 * time.Millisecond)
 						lock = false
