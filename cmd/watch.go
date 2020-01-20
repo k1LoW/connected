@@ -71,6 +71,11 @@ var watchCmd = &cobra.Command{
 			_, _ = fmt.Fprintln(os.Stderr, fmt.Sprintf("%s is disconnected. Connect and execute command again.", target))
 			os.Exit(1)
 		}
+		if wifi {
+			// Show current Wi-Fi network name
+			fmt.Print(string(o))
+		}
+		contains = string(o)
 
 		ticker := time.NewTicker(time.Duration(interval) * time.Second)
 		var c []string
