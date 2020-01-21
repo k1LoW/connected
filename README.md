@@ -22,10 +22,10 @@ $ connected watch -c "osascript -e "set Volume 10"; say -v Alex "Power cable dis
 $ connected watch --wifi -- say "Wi-Fi disconnected."
 ```
 
-or use `--command (-c)`
+**Watch Bluetooth devices connection:**
 
 ``` console
-$ connected watch -c "sh ./slack_notify.sh"
+$ connected watch --bluetooth -- sh ./twilio_call.sh
 ```
 
 ## Install
