@@ -7,7 +7,7 @@ import (
 	"os/exec"
 	"strings"
 
-	"github.com/goccy/go-yaml"
+	"gopkg.in/yaml.v2"
 )
 
 const bluetoothConnCheckCmd = "system_profiler SPBluetoothDataType"
@@ -62,13 +62,10 @@ func (c *Bluetooth) Check(ctx context.Context) error {
 	for k, v := range b {
 		if strings.Contains(k, "Devices") {
 			d := v
-			for k, v := range d.(map[string]interface{}) {
-				vv := v.(map[string]interface{})
-				if vv["Connected"].(string) == "Yes" {
-					s[k] = true
-				} else {
-					s[k] = false
-				}
+
+			for k, v := range d.(map[interface{}]interface{}) {
+				vv := v.(map[interface{}]interface{})
+				s[k.(string)] = vv["Connected"].(bool)
 			}
 		}
 	}
