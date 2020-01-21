@@ -34,13 +34,12 @@ import (
 	"github.com/spf13/cobra"
 )
 
-const wifiConn = "Wi-Fi"
-
 var (
 	defaultCmd = `osascript -e "set Volume 5"; say -v Alex "Disconnected."`
 	interval   int
 	command    string
 	wifi       bool
+	bluetooth  bool
 )
 
 // watchCmd represents the watch command
@@ -59,6 +58,8 @@ var watchCmd = &cobra.Command{
 		switch {
 		case wifi:
 			cn, err = conn.NewWifi(ctx)
+		case bluetooth:
+			cn, err = conn.NewBluetooth(ctx)
 		default:
 			cn, err = conn.NewPower(ctx)
 		}
@@ -116,4 +117,5 @@ func init() {
 	}
 	watchCmd.Flags().StringVarP(&command, "command", "c", defaultCmd, "command to execute when disconnected")
 	watchCmd.Flags().BoolVarP(&wifi, "wifi", "", false, "watch Wi-Fi connection")
+	watchCmd.Flags().BoolVarP(&bluetooth, "bluetooth", "", false, "watch Bluetooth connection")
 }
