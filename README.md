@@ -13,7 +13,7 @@ $ connected watch -- say "Power cable disconnected."
 or use `--command (-c)`
 
 ``` console
-$ connected watch -c "osascript -e "set Volume 10"; say -v Alex "Power cable disconnected."
+$ connected watch -c 'osascript -e "set Volume 10"; say -v Alex "Power cable disconnected."'
 ```
 
 **Watch Wi-Fi connection:**
