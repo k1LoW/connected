@@ -1,5 +1,10 @@
 # Changelog
 
+## [v0.4.1](https://github.com/k1LoW/connected/compare/v0.4.0...v0.4.1) - 2025-12-04
+### Other Changes
+- Fix usage by @masutaka in https://github.com/k1LoW/connected/pull/6
+- chore(deps): bump the dependencies group with 2 updates by @dependabot[bot] in https://github.com/k1LoW/connected/pull/9
+
 ## [v0.4.0](https://github.com/k1LoW/connected/compare/v0.3.0...v0.4.0) (2020-01-21)
 
 * Support watching Bluetooth devices connection [#5](https://github.com/k1LoW/connected/pull/5) ([k1LoW](https://github.com/k1LoW))
@@ -15,4 +20,3 @@
 * Add `connectedp completion` [#1](https://github.com/k1LoW/connected/pull/1) ([k1LoW](https://github.com/k1LoW))
 
 ## [v0.1.0](https://github.com/k1LoW/connected/compare/d151e8f2de87...v0.1.0) (2020-01-18)
-
