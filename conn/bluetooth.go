@@ -63,9 +63,24 @@ func (c *Bluetooth) Check(ctx context.Context) error {
 		if strings.Contains(k, "Devices") {
 			d := v
 
-			for k, v := range d.(map[interface{}]interface{}) {
-				vv := v.(map[interface{}]interface{})
-				s[k.(string)] = vv["Connected"].(bool)
+			dm, ok := d.(map[interface{}]interface{})
+			if !ok {
+				continue
+			}
+			for k, v := range dm {
+				vv, ok := v.(map[interface{}]interface{})
+				if !ok {
+					continue
+				}
+				ks, ok := k.(string)
+				if !ok {
+					continue
+				}
+				connected, ok := vv["Connected"].(bool)
+				if !ok {
+					continue
+				}
+				s[ks] = connected
 			}
 		}
 	}

@@ -42,7 +42,7 @@ var (
 	bluetooth  bool
 )
 
-// watchCmd represents the watch command
+// watchCmd represents the watch command.
 var watchCmd = &cobra.Command{
 	Use:   "watch",
 	Short: "watch connection",
@@ -65,7 +65,7 @@ var watchCmd = &cobra.Command{
 		}
 
 		if err != nil {
-			_, _ = fmt.Fprintln(os.Stderr, fmt.Sprintf("%s. Connect and execute command again.", err))
+			_, _ = fmt.Fprintf(os.Stderr, "%s. Connect and execute command again.\n", err)
 			os.Exit(1)
 		}
 
@@ -83,7 +83,7 @@ var watchCmd = &cobra.Command{
 		signal.Ignore()
 		signal.Notify(sigChan, syscall.SIGINT, syscall.SIGQUIT, syscall.SIGTERM)
 
-		_, _ = fmt.Fprintln(os.Stderr, fmt.Sprintf("Start watching connection (%s).", cn.Name()))
+		_, _ = fmt.Fprintf(os.Stderr, "Start watching connection (%s).\n", cn.Name())
 
 		lock := false
 	L:
@@ -96,13 +96,13 @@ var watchCmd = &cobra.Command{
 					continue
 				}
 				if err := cn.Check(ctx); err != nil {
-					go func() {
+					go func(c []string) {
 						lock = true
 						_, _ = fmt.Fprintln(os.Stderr, err)
-						_ = exec.CommandContext(ctx, c[0], c[1:]...).Run()
+						_ = exec.CommandContext(ctx, c[0], c[1:]...).Run() //nolint:gosec
 						time.Sleep(500 * time.Millisecond)
 						lock = false
-					}()
+					}(c)
 				}
 			}
 		}

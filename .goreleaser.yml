@@ -1,47 +1,83 @@
+version: 2
 before:
   hooks:
     - go mod download
     - go mod tidy
 builds:
--
-  id: connected-darwin
-  env:
-    - CGO_ENABLED=0
-  goos:
-    - darwin
-  ldflags:
-    - -s -w -X github.com/k1LoW/connected.version={{.Version}} -X github.com/k1LoW/connected.commit={{.FullCommit}} -X github.com/k1LoW/connected.date={{.Date}} -X github.com/k1LoW/connected/version.Version={{.Version}}
+  -
+    id: connected-darwin
+    flags:
+      - -trimpath
+    ldflags:
+      - -s -w -X github.com/k1LoW/connected/version.Revision={{.ShortCommit}}
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - darwin
+    goarch:
+      - amd64
+      - arm64
+  -
+    id: connected-windows
+    flags:
+      - -trimpath
+    ldflags:
+      - -s -w -X github.com/k1LoW/connected/version.Revision={{.ShortCommit}}
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - windows
+    goarch:
+      - amd64
+  -
+    id: connected-linux
+    flags:
+      - -trimpath
+    ldflags:
+      - -s -w -X github.com/k1LoW/connected/version.Revision={{.ShortCommit}}
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+    goarch:
+      - amd64
+      - arm64
 archives:
--
-  id: connected-archive
-  name_template: '{{ .ProjectName }}_v{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}'
-  format_overrides:
-    - goos: darwin
-      format: zip
-  files:
-    - CREDITS
-    - README.md
-    - CHANGELOG.md
+  -
+    id: connected-archive
+    name_template: '{{ .ProjectName }}_v{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}'
+    format_overrides:
+      - goos: darwin
+        formats:
+          - zip
+    files:
+      - LICENSE
+      - CREDITS
+      - README.md
+      - CHANGELOG.md
 checksum:
   name_template: 'checksums.txt'
-snapshot:
-  name_template: "{{ .Version }}-next"
 changelog:
-  skip: true
-brews:
--
-  name: connected
-  github:
-    owner: k1LoW
-    name: homebrew-tap
-  commit_author:
-    name: k1LoW
-    email: k1lowxb@gmail.com
-  homepage: https://github.com/k1LoW/connected
-  description: 'Check your MacBook power cable connection.'
-  install: |
-    system './connected', 'completion', 'bash', '--out', 'connected.bash'
-    system './connected', 'completion', 'zsh', '--out', 'connected.zsh'
-    bin.install 'connected'
-    bash_completion.install 'connected.bash' => 'connected'
-    zsh_completion.install 'connected.zsh' => '_connected'
+  sort: asc
+  filters:
+    exclude:
+    - '^docs:'
+    - '^test:'
+nfpms:
+  -
+    id: connected-nfpms
+    file_name_template: "{{ .ProjectName }}_{{ .Version }}-1_{{ .Arch }}"
+    ids:
+      - connected-linux
+    homepage: https://github.com/k1LoW/connected
+    maintainer: Ken'ichiro Oyama <k1lowxb@gmail.com>
+    description: connected is a tool for handling logs from a workspace on the Tailor Platform.
+    license: MIT
+    formats:
+      - deb
+      - rpm
+      - apk
+    bindir: /usr/bin
+    epoch: 1
+release:
+  use_existing_draft: true

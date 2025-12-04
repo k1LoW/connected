@@ -1,7 +1,7 @@
 package version
 
-// Name for this
+// Name for this.
 const Name string = "connected"
 
-// Version for this
-var Version = "dev"
+// Version for this.
+var Version = "0.4.0"

@@ -1,45 +1,30 @@
 PKG = github.com/k1LoW/connected
-COMMIT = $$(git describe --tags --always)
-OSNAME=${shell uname -s}
-ifeq ($(OSNAME),Darwin)
-	DATE = $$(gdate --utc '+%Y-%m-%d_%H:%M:%S')
-else
-	DATE = $$(date --utc '+%Y-%m-%d_%H:%M:%S')
-endif
+COMMIT = $(shell git rev-parse --short HEAD)
 
-export GO111MODULE=on
-
-BUILD_LDFLAGS = -X $(PKG).commit=$(COMMIT) -X $(PKG).date=$(DATE)
+BUILD_LDFLAGS = "-s -w -X $(PKG)/version.Revision=$(COMMIT)"
 
 default: test
 
-ci: depsdev test sec
+ci: depsdev test
 
 test:
-	go test ./... -coverprofile=coverage.txt -covermode=count
-
-sec:
-	gosec ./...
+	go test ./... -coverprofile=coverage.out -covermode=count -count=1
 
 build:
-	go build -ldflags="$(BUILD_LDFLAGS)"
+	go build -ldflags=$(BUILD_LDFLAGS) -trimpath
+
+install:
+	go install -ldflags=$(BUILD_LDFLAGS) -trimpath
+
+lint:
+	golangci-lint run ./...
 
 depsdev:
-	go get golang.org/x/tools/cmd/cover
-	go get golang.org/x/lint/golint
-	go get github.com/linyows/git-semv/cmd/git-semv
-	go get github.com/Songmu/ghch/cmd/ghch
-	go get github.com/Songmu/gocredits/cmd/gocredits
-	go get github.com/securego/gosec/cmd/gosec
+	go install github.com/Songmu/gocredits/cmd/gocredits@latest
 
-prerelease:
-	ghch -w -N ${VER}
-	gocredits . > CREDITS
-	git add CHANGELOG.md CREDITS
-	git commit -m'Bump up version number'
-	git tag ${VER}
+prerelease_for_tagpr: depsdev
+	go mod download
+	gocredits -w .
+	git add CHANGELOG.md CREDITS go.mod go.sum
 
-release:
-	goreleaser --rm-dist
-
-.PHONY: default test
+.PHONY: default ci test build install lint depsdev prerelease_for_tagpr
