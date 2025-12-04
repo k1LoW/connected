@@ -4,4 +4,4 @@ package version
 const Name string = "connected"
 
 // Version for this.
-var Version = "0.4.0"
+var Version = "0.4.1"
