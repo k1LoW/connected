@@ -1,5 +1,9 @@
 # Changelog
 
+## [v0.4.2](https://github.com/k1LoW/connected/compare/v0.4.1...v0.4.2) - 2026-01-01
+### Other Changes
+- chore(deps): bump Songmu/tagpr from 1.9.0 to 1.10.0 in the dependencies group by @dependabot[bot] in https://github.com/k1LoW/connected/pull/10
+
 ## [v0.4.1](https://github.com/k1LoW/connected/compare/v0.4.0...v0.4.1) - 2025-12-04
 ### Other Changes
 - Fix usage by @masutaka in https://github.com/k1LoW/connected/pull/6
